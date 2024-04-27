@@ -60,6 +60,7 @@ def checkWin():
             else:
                 oCounter = 0
                 xCounter = 0
+            if oCounter == 4 or xCounter == 4: return True
         
     for y in range(7):    #checks vertical rows
         xCounter = 0
@@ -132,6 +133,7 @@ def main(mode):
             if tps.isdigit():
                 tps = 1/float(tps)
                 break
+    os.system("cls")
     for i in range(len(board) * len(board[0])):
         
         if checkWin():
@@ -194,7 +196,7 @@ while True:
         if mode >0 and mode <4: break
     
         
-    
+
 main(mode)
 
 
