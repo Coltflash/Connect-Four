@@ -1,6 +1,7 @@
-import os, time
+import os, time, random, time
 
 os.system("cls")
+
 
 board = [[],[],[],[],[],[]]
 
@@ -42,7 +43,9 @@ def checkWin():
     xCounter = 0
     oCounter = 0
 
-    for index, hRows in enumerate(board):   #checks horizontal rows
+    for index, hRows in enumerate(board): #checks horizontal rows
+        xCounter = 0
+        oCounter = 0   
         for element in hRows:
             if oCounter == 4 or xCounter == 4: return True
 
@@ -84,20 +87,21 @@ def checkWin():
         for i in range(6):
             try:
                 if oCounter == 4 or xCounter == 4: return True
-                if board[indexs[id]-i][indexs[id+1]+i] == "🔴":
-                    xCounter +=1
-                    oCounter = 0
-                
-                elif board[indexs[id]-i][indexs[id+1]+i] == "⚫":
-                    oCounter +=1
-                    xCounter = 0
-                else:
-                    oCounter = 0
-                    xCounter = 0
-                if oCounter == 4 or xCounter == 4: return True
+                if indexs[id]-i >=0:
+                    if board[indexs[id]-i][indexs[id+1]+i] == "🔴":
+                        xCounter +=1
+                        oCounter = 0
+                    
+                    elif board[indexs[id]-i][indexs[id+1]+i] == "⚫":
+                        oCounter +=1
+                        xCounter = 0
+                    else:
+                        oCounter = 0
+                        xCounter = 0
+                    if oCounter == 4 or xCounter == 4: return True
             except IndexError: pass
 
-    indexs = [5,6, 5,5, 5,4, 5,3, 4,6, 4,6]
+    indexs = [5,6, 5,5, 5,4, 5,3, 4,6, 4,6] #other diagonal starting indexes
 
     for id in range(len(indexs)):   #checks other diagonal rows
         oCounter = 0
@@ -105,22 +109,29 @@ def checkWin():
         for i in range(6):
             try:
                 if oCounter == 4 or xCounter == 4: return True
-                if board[indexs[id]-i][indexs[id+1]-i] == "🔴":
-                    xCounter +=1
-                    oCounter = 0
-                
-                elif board[indexs[id]-i][indexs[id+1]-i] == "⚫":
-                    oCounter +=1
-                    xCounter = 0
-                else:
-                    oCounter = 0
-                    xCounter = 0
+                if indexs[id]-i >=0:
+                    if board[indexs[id]-i][indexs[id+1]-i] == "🔴":
+                        xCounter +=1
+                        oCounter = 0
+                    
+                    elif board[indexs[id]-i][indexs[id+1]-i] == "⚫":
+                        oCounter +=1
+                        xCounter = 0
+                    else:
+                        oCounter = 0
+                        xCounter = 0
                 if oCounter == 4 or xCounter == 4: return True
-            except IndexError: pass
+            except IndexError: pass   
 
 
     
-def main():
+def main(mode):
+    if mode == 3:
+        while True:
+            tps = input("Turns per second: ")
+            if tps.isdigit():
+                tps = 1/float(tps)
+                break
     for i in range(len(board) * len(board[0])):
         
         if checkWin():
@@ -130,36 +141,61 @@ def main():
 
         if i % 2 == 0:
             player = 1
-            piece = "🔴"
+            chip = "🔴"
         else:
             player = 2
-            piece = "⚫"
+            chip = "⚫"
 
         while True:
             printBoard()
             print(f"Player {player}")
-            index = player_move()
+            
+            if mode == 1:
+                index = player_move()
 
+            elif mode == 2:
+                if player == 1: index = player_move()
+                if player == 2: 
+                    time.sleep(0.4)
+                    index = random.randint(0,6)
+
+            elif mode == 3:
+                time.sleep(tps)
+                index = random.randint(0,6)  
+                
+            # else: 
+            #     print("Error")
+            #     time.sleep(2)
+            os.system("cls")
             move_played = False
 
             for i, hRow in enumerate(reversed(board)):
                 
                 if hRow[index] == "⚪":
-                    hRow[index] = piece
+                    hRow[index] = chip
                     move_played = True
                     break
 
             if move_played == False:
                 print("Row is full.")
-                time.sleep(1)
+                # time.sleep(1)
                 os.system("cls")
                 continue
 
             else: break
 
+print("Welcome to Connect Four!")
+print("\nChoose a Mode: (1: PvP; 2: PvE; 3: Auto)")
+while True:
+    
+    mode = input(">>")
+    if mode.isdigit():
+        mode = int(mode)
+        if mode >0 and mode <4: break
+    
+        
+    
+main(mode)
 
 
 
-
-
-main()
